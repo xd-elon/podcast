@@ -3,6 +3,9 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Player } from '../../components/Player';
+
+import { usePlayer } from '../../context/PlayerContext';
 
 import { api } from '../../services/api';
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString';
@@ -26,11 +29,12 @@ type EpisodeProps = {
 }
 
 export default function Episode({ episode }: EpisodeProps) {
+    const { play } = usePlayer();
     return (
         <div className={styles.episode}>
             <div className={styles.thumnailContainer}>
                 <Link href="/">
-                 <button>
+                 <button type="button">
                     <img src="/arrow-left.svg" alt="Voltar"/>
                  </button>
                 </Link>
@@ -41,7 +45,7 @@ export default function Episode({ episode }: EpisodeProps) {
                   src={episode.thumbnail} 
                   objectFit="cover"
                  />
-                 <button type="button">
+                 <button type="button" onClick={() => play(episode)}>
                     <img src="/play.svg" alt=""/>
                  </button>
             </div>
