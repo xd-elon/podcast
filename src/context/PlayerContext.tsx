@@ -4,7 +4,7 @@ type Episode = {
     title: string;
     members: string;
     thumbnail: string;
-    duration: Number;
+    duration: number;
     url: string
 }
 
@@ -13,13 +13,16 @@ type PlayerContextData = {
     currentEpisodeIndex: number;
     isPlaying: boolean;
     isLooping: boolean;
+    isShoffLing: boolean;
     play: (episode: Episode) => void;
     playList: (list: Episode[], index: number) => void;
     setPlayingState: (state: boolean) => void;
     togglePlay: () => void;
     toggleLoop: () => void;
+    toggleShoff: () => void;
     playNext: () => void;
     playPrevious: () => void;
+    clearPlayerState: () => void;
     hasNext: boolean;
     hasPrevious: boolean;
 }
@@ -35,6 +38,7 @@ export function PlayerContextProvider({children}: PlayerContextProviderProps) {
     const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLooping, setIsLooping] = useState(false);
+    const [isShoffLing, setIsShoffLing] = useState(true);
   
     function play(episode: Episode) {
       setEpisodeList([episode]);
@@ -51,20 +55,34 @@ export function PlayerContextProvider({children}: PlayerContextProviderProps) {
     function togglePlay() {
       setIsPlaying(!isPlaying)
     }
+
     function toggleLoop() {
         setIsLooping(!isLooping)
+    }
+
+    function toggleShoff() {
+        setIsShoffLing(!isShoffLing)
     }
 
     function setPlayingState(state: boolean) {
         setIsPlaying(state)
     }
 
+    function clearPlayerState() {
+        setEpisodeList([]);
+        setCurrentEpisodeIndex(0);
+    }
+
     const hasPrevious = currentEpisodeIndex > 0;
-    const hasNext = (currentEpisodeIndex + 1) < episodeList.length ;
+    const hasNext = isShoffLing || (currentEpisodeIndex + 1) < episodeList.length ;
 
     function playNext() {    
-        if(hasNext) {
-          setCurrentEpisodeIndex(currentEpisodeIndex + 1)
+        if (isShoffLing) {
+            const nextRandomEpisodeIndex = Math.floor(Math.random() * episodeList.length);
+
+            setCurrentEpisodeIndex(nextRandomEpisodeIndex);
+        } else if (hasNext) {
+           setCurrentEpisodeIndex(currentEpisodeIndex + 1)
         }
     }
 
@@ -84,11 +102,14 @@ export function PlayerContextProvider({children}: PlayerContextProviderProps) {
         playPrevious,
         isPlaying, 
         isLooping,
+        isShoffLing,
         togglePlay,
         toggleLoop,
+        toggleShoff,
         setPlayingState,
         hasNext,
-        hasPrevious
+        hasPrevious,
+        clearPlayerState
       }}
     >
         {children}

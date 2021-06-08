@@ -3,7 +3,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Player } from '../../components/Player';
+import Head from 'next/head';
 
 import { usePlayer } from '../../context/PlayerContext';
 
@@ -32,6 +32,10 @@ export default function Episode({ episode }: EpisodeProps) {
     const { play } = usePlayer();
     return (
         <div className={styles.episode}>
+
+        <Head>
+            <title> {episode.title} | Podcastr</title>
+        </Head>
             <div className={styles.thumnailContainer}>
                 <Link href="/">
                  <button type="button">
